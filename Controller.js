@@ -6,14 +6,19 @@ const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 dotenv.config();
 const SaveIdeaToDb = async (data) => {
-  const Idea = new IdeaModel({
-    Title: data.Title,
-    Description: data.Description,
-    SoftSavings: data.SoftSavings,
-    HardSavings: data.HardSavings,
-    UserId: data.UserId,
-  });
-  Idea.save();
+  try {
+    const Idea = new IdeaModel({
+      Title: data.Title,
+      Description: data.Description,
+      SoftSavings: data.SoftSavings,
+      HardSavings: data.HardSavings,
+      UserId: data.UserId,
+    });
+    const saved = Idea.save();
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: err.message };
+  }
 };
 
 const register = async (data) => {
@@ -50,7 +55,7 @@ const login = async (data) => {
         throw Error("Invalid credentials");
       } else {
         const token = jwt.sign(
-          { id: user._id, role: user.Role },
+          { id: user._id, role: user.Role, username: user.UserName },
           process.env.JWT_SECRET,
           {
             expiresIn: "1d",
