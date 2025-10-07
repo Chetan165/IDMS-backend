@@ -27,7 +27,7 @@ const IdeadSchema = mongoose.Schema({
     enum: ["Draft", "in Approval", "Qualification", "Development", "Deployed"],
     default: "Draft",
   },
-  Username: {
+  UserId: {
     type: String,
     required: true,
   },

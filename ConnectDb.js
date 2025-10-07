@@ -4,7 +4,7 @@ dotenv.config();
 
 const DB_URI = process.env.DB_URI;
 if (!DB_URI) {
-  throw Error("Mongodb ur is not provided");
+  throw Error("Mongodb uri is not provided");
 }
 
 const ConnectDb = async () => {
