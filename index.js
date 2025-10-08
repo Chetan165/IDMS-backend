@@ -3,8 +3,14 @@ const app = express();
 const ConnectDb = require("./ConnectDb");
 const controller = require("./Controller");
 const auth = require("./Middlewares/Authentication");
+const cors = require("cors");
 app.use(express.json());
-
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 app.post("/api/ideas", async (req, res) => {
   //route for saving ideas
   const response = await controller.SaveIdeaToDb(req.body);
@@ -28,6 +34,7 @@ app.post("/api/register", async (req, res) => {
 });
 
 app.post("/api/login", async (req, res) => {
+  //login route
   const result = await controller.login(req.body);
   if (!result.ok) {
     res.status(400).json({
@@ -39,6 +46,10 @@ app.post("/api/login", async (req, res) => {
       ok: true,
       token: result.token,
     });
+});
+
+app.get("/api/protected", auth, (req, res) => {
+  res.json({ ok: true });
 });
 
 app.listen(3000, async () => {

@@ -25,7 +25,6 @@ const register = async (data) => {
   const hashedPassword = await bcrypt.hash(data.Password, 10);
   try {
     const query = await UserModel.findOne({ UserName: data.UserName });
-    console.log(query);
     if (query) {
       throw Error("User already exists");
     } else {
