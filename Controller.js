@@ -54,7 +54,7 @@ const login = async (data) => {
         throw Error("Invalid credentials");
       } else {
         const token = jwt.sign(
-          { id: user._id, role: user.Role, username: user.UserName },
+          { id: user._id, role: user.Role, UserName: user.UserName },
           process.env.JWT_SECRET,
           {
             expiresIn: "1d",
@@ -67,8 +67,21 @@ const login = async (data) => {
     return { ok: false, error: err.message };
   }
 };
+
+const getIdeas = async (user) => {
+  try {
+    const ideas = await IdeaModel.find({
+      UserId: user.UserName,
+    });
+    console.log(ideas);
+    return ideas;
+  } catch (err) {
+    return err;
+  }
+};
 module.exports = {
   SaveIdeaToDb,
   register,
   login,
+  getIdeas,
 };

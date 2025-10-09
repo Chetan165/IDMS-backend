@@ -49,7 +49,14 @@ app.post("/api/login", async (req, res) => {
 });
 
 app.get("/api/protected", auth, (req, res) => {
-  res.json({ ok: true });
+  res.json({ ok: true, user: req.user });
+});
+
+app.get("/api/getideas", auth, async (req, res) => {
+  const result = await controller.getIdeas(req.user);
+  if (!result.ok) {
+    res.status(400).json({ ok: false, msg: result });
+  } else res.status(200).json({ ok: true, ideas: result, user: req.user });
 });
 
 app.listen(3000, async () => {
