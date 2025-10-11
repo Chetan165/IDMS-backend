@@ -74,9 +74,54 @@ const getIdeas = async (user) => {
       UserId: user.UserName,
     });
     console.log(ideas);
-    return ideas;
+    return { ok: true, ideas };
   } catch (err) {
-    return err;
+    return { ok: false, error: err.message };
+  }
+};
+
+const getIdeasAll = async () => {
+  try {
+    const ideas = await IdeaModel.find();
+    console.log(ideas);
+    return { ok: true, ideas };
+  } catch (err) {
+    return { ok: false, error: err.message };
+  }
+};
+
+const AdminDashboardStats = async (user) => {
+  try {
+    const result = await IdeaModel.find({
+      UserId: user.UserName,
+    });
+    let TotalSavings = 0;
+    let TotalHardSavings = 0;
+    let TotalSoftSavings = 0;
+    console.log(result);
+    let map = {
+      Draft: 0,
+      "in-Approval": 0,
+      Qualification: 0,
+      Development: 0,
+      Deployed: 0,
+    };
+    result.forEach((idea) => {
+      map[idea.Status]++;
+      TotalSavings += idea.HardSavings + idea.SoftSavings;
+      TotalHardSavings += idea.HardSavings;
+      TotalSoftSavings += idea.SoftSavings;
+    });
+    console.log(map);
+    const SavingsData = {
+      TotalHardSavings: ((TotalHardSavings * 100) / TotalSavings).toFixed(2),
+      TotalSoftSavings: ((TotalSoftSavings * 100) / TotalSavings).toFixed(2),
+      TotalSavings,
+    };
+    return { ok: true, StatusData: map, SavingsData };
+  } catch (err) {
+    console.log(err);
+    return { ok: false, error: err.message };
   }
 };
 module.exports = {
@@ -84,4 +129,6 @@ module.exports = {
   register,
   login,
   getIdeas,
+  getIdeasAll,
+  AdminDashboardStats,
 };

@@ -59,6 +59,24 @@ app.get("/api/getideas", auth, async (req, res) => {
   } else res.status(200).json({ ok: true, ideas: result, user: req.user });
 });
 
+app.get("/api/admin/stats", auth, async (req, res) => {
+  const data = await controller.AdminDashboardStats(req.user);
+  console.log(data);
+  if (!data.ok) {
+    res.json({ ok: false, msg: data.error });
+  } else {
+    res.status(200).json({ ok: true, data });
+  }
+});
+
+app.get("/api/getideasAll", async (req, res) => {
+  const data = await controller.getIdeasAll();
+  console.log(data);
+  if (!data.ok) {
+    res.status(400).json({ ok: false, msg: data.error });
+  } else res.status(200).json({ ok: true, ideas: data.ideas });
+});
+
 app.listen(3000, async () => {
   console.log("server started");
   await ConnectDb();
