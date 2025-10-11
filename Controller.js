@@ -92,9 +92,7 @@ const getIdeasAll = async () => {
 
 const AdminDashboardStats = async (user) => {
   try {
-    const result = await IdeaModel.find({
-      UserId: user.UserName,
-    });
+    const result = await IdeaModel.find();
     let TotalSavings = 0;
     let TotalHardSavings = 0;
     let TotalSoftSavings = 0;
