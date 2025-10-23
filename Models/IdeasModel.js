@@ -1,3 +1,4 @@
+const { Type } = require("@aws-sdk/client-s3");
 const mongoose = require("mongoose");
 const IdeadSchema = mongoose.Schema({
   Title: {
@@ -30,6 +31,10 @@ const IdeadSchema = mongoose.Schema({
   UserId: {
     type: String,
     required: true,
+  },
+  URL: {
+    type: String,
+    default: "",
   },
 });
 

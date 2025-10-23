@@ -122,6 +122,15 @@ const AdminDashboardStats = async (user) => {
     return { ok: false, error: err.message };
   }
 };
+const UpdateUrl = async (objid, url) => {
+  const response = await IdeaModel.findByIdAndUpdate(
+    { _id: objid },
+    { URL: url },
+    { new: false }
+  );
+  return response;
+};
+
 module.exports = {
   SaveIdeaToDb,
   register,
@@ -129,4 +138,5 @@ module.exports = {
   getIdeas,
   getIdeasAll,
   AdminDashboardStats,
+  UpdateUrl,
 };

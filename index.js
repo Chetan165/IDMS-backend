@@ -4,6 +4,9 @@ const ConnectDb = require("./ConnectDb");
 const controller = require("./Controller");
 const auth = require("./Middlewares/Authentication");
 const cors = require("cors");
+const upload = require("./Middlewares/upload");
+const fs = require("fs");
+const uploadToS3 = require("./handleuploads");
 app.use(express.json());
 app.use(
   cors({
@@ -75,6 +78,35 @@ app.get("/api/getideasAll", async (req, res) => {
   if (!data.ok) {
     res.status(400).json({ ok: false, msg: data.error });
   } else res.status(200).json({ ok: true, ideas: data.ideas });
+});
+
+app.post("/upload", upload.default.single("file"), async (req, res) => {
+  console.log(req.file);
+  console.log(req.body.fileid);
+
+  if (!req.file) {
+    res.json({ ok: false, msg: "File not found" });
+    return;
+  }
+  // fs.writeFile(
+  //   `./uploads/${req.body.fileid + req.file.originalname}`,
+  //   req.file.buffer,
+  //   (err) => {
+  //     if (err) {
+  //       return res.json({ ok: false, msg: "File upload failed" });
+  //     }
+  //   }
+  // );
+  const respone = await uploadToS3(
+    req.file.buffer,
+    req.file.mimetype,
+    req.body.fileid + req.file.originalname
+  );
+  const url = `https://${process.env.AWS_BUCKET_NAME}.s3.${
+    process.env.AWS_REGION
+  }.amazonaws.com/${req.body.fileid}${req.file.originalname.replace(" ", "+")}`;
+  const UrlUpdated = await controller.UpdateUrl(req.body.fileid, url);
+  res.json({ ok: true, msg: "file uploaded successfully" });
 });
 
 app.listen(3000, async () => {
