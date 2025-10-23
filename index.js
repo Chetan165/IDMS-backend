@@ -88,15 +88,6 @@ app.post("/upload", upload.default.single("file"), async (req, res) => {
     res.json({ ok: false, msg: "File not found" });
     return;
   }
-  // fs.writeFile(
-  //   `./uploads/${req.body.fileid + req.file.originalname}`,
-  //   req.file.buffer,
-  //   (err) => {
-  //     if (err) {
-  //       return res.json({ ok: false, msg: "File upload failed" });
-  //     }
-  //   }
-  // );
   const respone = await uploadToS3(
     req.file.buffer,
     req.file.mimetype,
